@@ -1,20 +1,37 @@
 
 import func_ml
 import cv2
-import numpy as np
+import tensorflow as tf
 
 
 class face_classify:
 
-    def __init__(self, size=30):
+    def __init__(self, model_name, size=30):
         """
             Initiation Function
         """
         self.img_size = size
-        self.eye_w = func_ml.load_csv("model/eyes_w.csv")
-        self.eye_b = func_ml.load_csv("model/eyes_b.csv")
-        self.mouth_w = func_ml.load_csv("model/mouth_w.csv")
-        self.mouth_b = func_ml.load_csv("model/mouth_b.csv")
+
+        tf.reset_default_graph()
+        self.X = tf.placeholder("float", [None, self.img_size, self.img_size, 1])
+
+        w1 = func_ml.init_weights([3, 3, 1, 16])                 # 3x3x1 conv, 16 outputs
+        w2 = func_ml.init_weights([3, 3, 16, 32])                # 3x3x16 conv, 32 outputs
+        w3 = func_ml.init_weights([3, 3, 32, 64])                # 3x3x32 conv, 64 outputs
+        w4 = func_ml.init_weights([64 * 2 * 2, 20])          # 64*10*10 input, 2000 outputs
+        w5 = func_ml.init_weights([20, 2])                  # 2000 inputs, 1000 outputs (labels)
+
+        self.p_keep_con = tf.placeholder("float")
+        self.p_keep_hidden = tf.placeholder("float")
+        py_x = func_ml.model(self.X, w1, w2, w3, w4, w5, self.p_keep_con, self.p_keep_hidden)
+
+        self.predict_op = tf.argmax(py_x, 1)
+
+        self.sess = tf.Session()
+        init = tf.initialize_all_variables()
+        self.sess.run(init)
+        saver = tf.train.Saver()
+        saver.restore(self.sess, model_name)
 
     def load_image(self, img_name):
         """
@@ -23,23 +40,25 @@ class face_classify:
         img_data = cv2.imread(img_name)
         return img_data
 
-    def classify(self, img_data, obj_name):
+    def classify(self, img_data):
 
         gray_data = cv2.cvtColor(img_data, cv2.COLOR_RGB2GRAY)
         resize_data = cv2.resize(gray_data, (self.img_size, self.img_size), interpolation=cv2.INTER_AREA)
-        img_train = resize_data.reshape(self.img_size * self.img_size)
+        img_train = resize_data.reshape(self.img_size, self.img_size, 1)
 
-        if obj_name == 'eye':
-            ret = func_ml.model2(func_ml.conv2(self.eye_w), func_ml.conv2(self.eye_b), img_train)
-        elif obj_name == 'mouth':
-            ret = func_ml.model2(func_ml.conv2(self.mouth_w), func_ml.conv2(self.mouth_b), img_train)
+        ret = self.sess.run(self.predict_op, feed_dict={self.X: [img_train], self.p_keep_con: 1, self.p_keep_hidden: 1})
 
-        return np.argmax(ret)
+        return ret[0]
 
 
 if __name__ == "__main__":
-    my_class = face_classify()
-    color_img = my_class.load_image('Pictures/mouth/1/mouth_2.bmp')
-    object_name = 'mouth'
-    result = my_class.classify(color_img, object_name)
-    print object_name, result
+    mouth_class = face_classify('model/model_CNN_mouth')
+    eye_class = face_classify('model/model_CNN_eyes')
+
+    mouth_img = mouth_class.load_image('Pictures/mouth/1/mouth_7.bmp')
+    result = mouth_class.classify(mouth_img)
+    print 'mouth', result
+
+    eye_img = eye_class.load_image('Pictures/eyes/0/eye1_51.bmp')
+    result = eye_class.classify(eye_img)
+    print 'eye', result
