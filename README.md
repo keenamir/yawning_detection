@@ -1,21 +1,13 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This is the project detection of yawning using CNN.
 
-### What is this repository for? ###
+### Package requirement ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Python 2.7
+* TensorFlow 0.10
+* OpenCV 3.2
+* Numpy
 
 ### Contribution guidelines ###
 
