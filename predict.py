@@ -37,13 +37,12 @@ class face_classify:
         """
             Load the image and return c0lor value
         """
-        img_data = cv2.imread(img_name)
+        img_data = cv2.imread(img_name, 0)
         return img_data
 
     def classify(self, img_data):
 
-        gray_data = cv2.cvtColor(img_data, cv2.COLOR_RGB2GRAY)
-        resize_data = cv2.resize(gray_data, (self.img_size, self.img_size), interpolation=cv2.INTER_AREA)
+        resize_data = cv2.resize(img_data, (self.img_size, self.img_size), interpolation=cv2.INTER_AREA)
         img_train = resize_data.reshape(self.img_size, self.img_size, 1)
 
         ret = self.sess.run(self.predict_op, feed_dict={self.X: [img_train], self.p_keep_con: 1, self.p_keep_hidden: 1})

@@ -77,46 +77,25 @@ while True:
         img_mouth = gray[y:y + h, x:x + w]
         ret_mouth = mouth_class.classify(img_mouth)
 
-    ret_eye = 0
+    ret_eye = [0, 0]
+    eye_ind = 0
     for (x, y, w, h) in eye_data:
         img_eye = gray[y:y + h, x:x + w]
-        if eye_class.classify(img_eye):
-            ret_eye = 1
+        ret_eye[eye_ind] = eye_class.classify(img_eye)
+        eye_ind += 1
 
-    cv2.putText(image, "eye: " + state[ret_eye] + ", mouth: " + state[ret_mouth], (20, height - 20), cv2.FONT_HERSHEY_DUPLEX, 1, color_red, 2)
+    cv2.putText(image, "eye: " + state[ret_eye[0] and ret_eye[1]] + ", mouth: " + state[ret_mouth],
+                (20, height - 20), cv2.FONT_HERSHEY_DUPLEX, 1, color_red, 2)
 
-    # # Save the individual parts
-    # if save_image == 1:
-    #     t += 1
-    #     eye = 0
-    #     if t % 20 == 0:
-    #         ind += 1
-    #         print "save"
-    #         for (x, y, w, h) in eye_data:
-    #             img_eye = image[y:y + h, x:x + w]
-    #             if eye == 0:
-    #                 cv2.imwrite('eye1_' + ind.__str__() + '.bmp', img_eye)
-    #                 eye = 1
-    #             else:
-    #                 cv2.imwrite('eye2_' + ind.__str__() + '.bmp', img_eye)
+    # # Draw a rectangle around the faces
+    # for (x, y, w, h) in eye_data:
+    #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
     #
-    #         for (x, y, w, h) in mouth_data:
-    #             img_mouth = image[y:y + h, x:x + w]
-    #             cv2.imwrite('mouth_' + ind.__str__() + '.bmp', img_mouth)
+    # for (x, y, w, h) in mouth_data:
+    #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
     #
-    #         for (x, y, w, h) in face_data:
-    #             img_face = image[y:y + h, x:x + w]
-    #             cv2.imwrite('face_' + ind.__str__() + '.bmp', img_face)
-
-    # Draw a rectangle around the faces
-    for (x, y, w, h) in eye_data:
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    for (x, y, w, h) in mouth_data:
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
-
-    for (x, y, w, h) in face_data:
-        cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+    # for (x, y, w, h) in face_data:
+    #     cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
     cv2.imshow("Faces found", image)
 
