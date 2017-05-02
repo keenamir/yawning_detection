@@ -1,0 +1,55 @@
+==========================
+step 1: install opencv
+==========================
+"run terminal and type command lines"
+
+"updete apt-get":
+$ sudo apt-get update 
+
+"install packages":
+$ sudo apt-get install build-essential checkinstall cmake git pkg-config yasm libtiff5-dev libjpeg-dev libjasper-dev libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev libxine2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev  libv4l-dev python-dev python-numpy libtbb-dev libgtk2.0-dev libfaac-dev libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev libxvidcore-dev x264 v4l-utils libopenexr-dev python-tk  libeigen3-dev libx264-dev
+
+$ sudo add-apt-repository ppa:mc3man/gstffmpeg-keep
+$ sudo apt-get update
+$ sudo apt-get install ffmpeg gstreamer0.10-ffmpeg
+
+"download opencv source"
+$ mkdir opencv_source
+$ cd opencv_source
+$ git clone https://github.com/opencv/opencv.git
+$ git clone https://github.com/opencv/opencv_contrib.git
+
+"install opencv and build"
+$ cd opencv
+$ mkdir build
+$ cd build
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D WITH_TBB=ON -D WITH_IPP=OFF -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules  ../ 
+
+$ make  -j $(nproc)
+$ sudo make install
+$ sudo ldconfig
+
+"testing opencv version"
+$ pkg-config --modversion opencv
+3.2.0
+
+==================================
+step 2: "install yaml"
+
+$sudo apt-get install python-yaml
+
+==================================
+if numpy was installed already, then it is not necessary.
+step 3: "install numpy"
+
+$sudo apt-get install python-numpy
+
+
+
+
+
+
+
+
+
+
