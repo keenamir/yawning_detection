@@ -54,7 +54,10 @@ while True:
     for (x, y, w, h) in mouth:
         if x > face_data[0][0] and x + w < face_data[0][0] + face_data[0][2]:               # out of x direction
             if y + h/2 < face_data[0][1] + face_data[0][3]:                                 # out of y direction
-                mouth_data.append([x, y, w, h])
+                if y > face_data[0][1] + face_data[0][3]/2:
+                    if y < face_data[0][1] + face_data[0][3]:
+                        if y + h > face_data[0][1] + face_data[0][3] * 0.8:
+                            mouth_data.append([x, y, w, h])
 
     # ----------------- get mouth image data for deep learning --------------
     ret_mouth = 1

@@ -56,6 +56,14 @@ def train(obj_name, img_size, para_rate):
         # train the CNN model and return cost value
         ret = sess.run([train_op, cost_op], feed_dict={X: train_x, Y: train_y, p_keep_con: 0.8, p_keep_hidden: 0.8})
 
+        # calculate cost and accuracy, and display it
+        if step_i % 10 == 0:
+            pred_y = sess.run(predict_op, feed_dict={X: train_x, p_keep_con: 1, p_keep_hidden: 1})
+            acc = np.mean(np.argmax(train_y, axis=1) == pred_y)
+            print "  step:", step_i, " cost:", ret[1], " accuracy:", acc * 100
+            saver.save(sess, 'model/model_CNN_' + obj_name)     # save CNN model weight
+        else:
+            print "  step:", step_i, " cost:", ret[1]
 
     print ("Optimization Finished!")
 
