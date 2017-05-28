@@ -10,10 +10,16 @@ def expand0(number, width):
 
 
 def init_weights(shape):
+    """
+        Machine Learning model weight intializer
+    """
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
 
 
 def model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden):
+    """
+        Machine Learning model configuration
+    """
     l1a = tf.nn.relu(tf.nn.conv2d(X, w, strides=[1, 2, 2, 1], padding='SAME'))
     l1 = tf.nn.max_pool(l1a, ksize=[1, 3, 3, 1], strides=[1, 3, 3, 1], padding='SAME')
     l1 = tf.nn.dropout(l1, p_keep_conv)

@@ -54,10 +54,7 @@ while True:
     for (x, y, w, h) in mouth:
         if x > face_data[0][0] and x + w < face_data[0][0] + face_data[0][2]:               # out of x direction
             if y + h/2 < face_data[0][1] + face_data[0][3]:                                 # out of y direction
-                if y > face_data[0][1] + face_data[0][3]/2:
-                    if y < face_data[0][1] + face_data[0][3]:
-                        if y + h > face_data[0][1] + face_data[0][3] * 0.8:
-                            mouth_data.append([x, y, w, h])
+                mouth_data.append([x, y, w, h])
 
     # ----------------- get mouth image data for deep learning --------------
     ret_mouth = 1
@@ -76,15 +73,15 @@ while True:
     cv2.putText(image, "eye: " + state[ret_eye[0] and ret_eye[1]] + ", mouth: " + state[ret_mouth],
                 (20, height - 20), cv2.FONT_HERSHEY_DUPLEX, 1, color_red, 2)
 
-    # # ------------------- Draw a rectangle around the faces -------------------
-    # for (x, y, w, h) in eye_data:
-    #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #
-    # for (x, y, w, h) in mouth_data:
-    #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
-    #
-    # for (x, y, w, h) in face_data:
-    #     cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+    # ------------------- Draw a rectangle around the faces -------------------
+    for (x, y, w, h) in eye_data:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    for (x, y, w, h) in mouth_data:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+    for (x, y, w, h) in face_data:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
     # -------------------- display the result image ---------------------------
     cv2.imshow("Faces found", image)
